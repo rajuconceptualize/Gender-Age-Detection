@@ -1,0 +1,7 @@
+
+
+"screenshot 1.png" && "screenshot 2.png"  - Recognised known face from local file database and mentioned the face with its Id, Gender and Age 
+
+"screenshot 3.png" &&  "screenshot 4.png" - Recognised knownn faces with the support of known images from local folder. 
+
+"screenshot 5.png"  - Python script output at terminal
