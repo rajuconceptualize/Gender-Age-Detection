@@ -15,9 +15,6 @@ modi_face_encodings = face_recognition.face_encodings(modi_image)[0]
 trump_image = face_recognition.load_image_file('images/samples/trump.jpg')
 trump_face_encodings = face_recognition.face_encodings(trump_image)[0]
 
-# abhi_image = face_recognition.load_image_file('images/samples/abhi.jpg')
-# abhi_face_encodings = face_recognition.face_encodings(abhi_image)[0]
-
 
 raju_image = face_recognition.load_image_file('images/samples/Raju.jpg')
 raju_face_encodings = face_recognition.face_encodings(raju_image)[0]
