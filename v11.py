@@ -3,7 +3,7 @@ import face_recognition
 import pickle
 import time
 import requests
-
+import json 
 
 
 class API:
@@ -48,8 +48,8 @@ def player(url):
             try:
                 return response.json()
             except ValueError:
-                print('Response content is not valid JSON')
-                print('Response text:', response.text)
+                # print('Response content is not valid JSON')
+                # print('Response text:', response.text)
                 return None
         else:
             print(f'Failed: {response.status_code} {response.text}')
@@ -116,7 +116,6 @@ def player_trigger(number):
     elif number == 2:
         response = player(API.PLAYER_GENERAL)
     elif number == 3:
-        print("IT IS HERE")
         response = player(API.PLAYER_MALE_YOUNG_ADULT)
     elif number == 4:
         response = player(API.PLAYER_MALE_SENIOR_ADULT)
@@ -146,6 +145,23 @@ def main():
     faceNet = cv2.dnn.readNet(faceModel, faceProto)
     ageNet = cv2.dnn.readNet(ageModel, ageProto)
     genderNet = cv2.dnn.readNet(genderModel, genderProto)
+    
+
+    # start the player 
+
+    status = player(API.PLAYER_STATUS)
+
+    print('Starting Player Status:', status)
+
+    if status['playing'] != True:
+        player(API.PLAYER_START)
+        print("Started the Player")
+        mode = "general"
+    else:
+        player(API.PLAYER_GENERAL)
+        print("Player already running....now swapped to General")
+        mode = "general"
+
 
     while True:
         ret, frame = video_capture.read()
@@ -186,9 +202,27 @@ def main():
                 cv2.putText(result_img, f"{identifier}, {metadata['gender']}, {age_category}", (left, top - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 255), 2, cv2.LINE_AA)
 
                 category = categorize_gender_age(metadata['gender'], age_category)
-                print(f"Category: {category}")
-                response_1 = player_trigger(category)
-                print('Response 1:', response_1)
+                # print(f"Category: {category}")
+
+                response_1 = player(API.PLAYER_STATUS)
+
+                # print('Player Status:', response_1)
+
+                
+                # print(response_1['playing'])
+
+                if response_1['playing'] != True:
+                    player(API.PLAYER_START)
+                    player_trigger(category)
+                    response_2 = "Triggered Player"
+                else:
+                    if mode == "general":
+                        player_trigger(category)
+                        response_2 = "Triggered Player"
+                    else:
+                        response_2 = "Player is Running so not triggering"
+
+                print('Response:', response_2)
             else:
                 faceNet.setInput(cv2.dnn.blobFromImage(rgb_face, 1.0, (300, 300), MODEL_MEAN_VALUES, swapRB=True))
                 detections = faceNet.forward()
