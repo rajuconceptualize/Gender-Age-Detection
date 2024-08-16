@@ -173,6 +173,7 @@ def main():
 
         if not face_boxes:
             print("No face detected")
+            player(API.PLAYER_STOP)
             continue
 
         for (top, right, bottom, left), face_encoding in zip(face_boxes, face_encodings):
@@ -214,13 +215,15 @@ def main():
                 if response_1['playing'] != True:
                     player(API.PLAYER_START)
                     player_trigger(category)
-                    response_2 = "Triggered Player"
+                    mode = "category"
+                    response_2 = "Triggered Player with " + str(category)
                 else:
                     if mode == "general":
+                        mode = "category"
                         player_trigger(category)
-                        response_2 = "Triggered Player"
+                        response_2 = "Triggered Player fron General with " + str(category)
                     else:
-                        response_2 = "Player is Running so not triggering"
+                        response_2 = "Player is Running "+mode +"so not triggering"
 
                 print('Response:', response_2)
             else:
