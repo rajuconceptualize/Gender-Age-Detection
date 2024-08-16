@@ -2,7 +2,64 @@ import cv2
 import face_recognition
 import pickle
 import time
-import main
+import requests
+
+
+
+class API:
+    BASE_URL = 'http://127.0.0.1:5544/'
+    PLAYER_STATUS = BASE_URL + 'playback/status'
+    PLAYER_STOP_CURRENT = BASE_URL + 'campaign/current/stop'
+    PLAYER_SHOW = BASE_URL + 'playback/show'
+    PLAYER_HIDE = BASE_URL + 'playback/hide'
+    PLAYER_START = BASE_URL + 'playback/start'
+    PLAYER_STOP = BASE_URL + 'playback/stop'
+    PLAYER_TRIGGER_CAMPAIGN = BASE_URL + 'trigger/1'
+
+    PLAYER_GENERAL = BASE_URL + 'trigger/general'
+
+    PLAYER_FEMALE_YOUNG_ADULT = BASE_URL + 'trigger/FemaleYoungAdult'
+
+    PLAYER_MALE_YOUNG_ADULT = BASE_URL + 'trigger/MaleYoungAdult'
+    PLAYER_MALE_SENIOR_ADULT = BASE_URL + 'trigger/MaleSeniorAdult'
+
+
+
+
+def player(url):
+    """
+    Makes a POST request to the given URL without sending any data.
+
+    Args:
+        url (str): The API endpoint URL.
+
+    Returns:
+        response (dict): The JSON response from the API if the request is successful.
+        None: If the request fails.
+    """
+    try:
+
+
+        # Make the POST request without sending any data
+        response = requests.post(url)
+
+        # Check the status code of the response
+        if response.status_code == 200:
+            try:
+                return response.json()
+            except ValueError:
+                print('Response content is not valid JSON')
+                print('Response text:', response.text)
+                return None
+        else:
+            print(f'Failed: {response.status_code} {response.text}')
+            return None
+
+    except Exception as e:
+        print(f'An error occurred: {e}')
+        return None
+
+
 
 def save_known_faces(known_face_encodings, known_face_metadata):
     with open("known_faces.pkl", "wb") as f:
@@ -37,6 +94,21 @@ def categorize_age(age_range_str):
     else:
         return "Senior Adult"
     
+def categorize_gender_age(gender, age_category):
+    # Ensure that gender input is case insensitive
+    gender = gender.lower()
+
+    # Determine the code based on gender and age category
+    if gender == 'female' and age_category == 'Young Adult':
+        return 1
+    elif gender == 'female' and age_category == 'Senior Adult':
+        return 2
+    elif gender == 'male' and age_category == 'Young Adult':
+        return 3
+    elif gender == 'male' and age_category == 'Senior Adult':
+        return 4
+    else:
+        return None  # Return None for invalid input or unrecognized category
 
 
 def main():
@@ -56,7 +128,7 @@ def main():
     # ageList = ['(0-40)','(41-100)']
     genderList = ['Male', 'Female']
 
-    print(type(ageList[0]))
+    # print(type(ageList[0]))
 
     faceNet = cv2.dnn.readNet(faceModel, faceProto)
     ageNet = cv2.dnn.readNet(ageModel, ageProto)
@@ -94,11 +166,16 @@ def main():
                 age_category = categorize_age(metadata['age'])
                 print(age_category)  # Output will be "Young Adult" for this example
 
-                
+
                 print(f"Known face detected: {identifier}, Gender: {metadata['gender']}, Category: {age_category}")
                 
 
                 cv2.putText(result_img, f"{identifier}, {metadata['gender']}, {age_category}", (left, top - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 255), 2, cv2.LINE_AA)
+
+                category = categorize_gender_age(metadata['gender'], age_category)
+                print(f"Category: {category}")
+                response_1 = player(API.PLAYER_STATUS)
+                print('Response 1:', response_1)
             else:
                 faceNet.setInput(cv2.dnn.blobFromImage(rgb_face, 1.0, (300, 300), MODEL_MEAN_VALUES, swapRB=True))
                 detections = faceNet.forward()
