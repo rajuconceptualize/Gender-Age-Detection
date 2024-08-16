@@ -60,6 +60,8 @@ def player(url):
 # response_1 = player(API.PLAYER_STATUS)
 # response_2 = player(API.PLAYER_STOP_CURRENT)
 # response_3 = player(API.PLAYER_STOP)
+# response_4 = player(API.PLAYER_MALE_YOUNG_ADULT)
+response_5 = player(API.PLAYER_FEMALE_YOUNG_ADULT)
 
 # print('Response 1:', response_1)
 # print('Response 2:', response_2)

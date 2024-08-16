@@ -110,6 +110,18 @@ def categorize_gender_age(gender, age_category):
     else:
         return None  # Return None for invalid input or unrecognized category
 
+def player_trigger(number):
+    if number == '1':
+        response = player(API.PLAYER_FEMALE_YOUNG_ADULT)
+    elif number == '2':
+        response = player(API.PLAYER_GENERAL)
+    elif number == '3':
+        response = player(API.PLAYER_MALE_YOUNG_ADULT)
+    elif number == '4':
+        response = player(API.PLAYER_MALE_SENIOR_ADULT)
+    else:
+        response = player(API.PLAYER_GENERAL)
+    return response
 
 def main():
     known_face_encodings, known_face_metadata = load_known_faces()
@@ -174,7 +186,7 @@ def main():
 
                 category = categorize_gender_age(metadata['gender'], age_category)
                 print(f"Category: {category}")
-                response_1 = player(API.PLAYER_STATUS)
+                response_1 = player_trigger(category)
                 print('Response 1:', response_1)
             else:
                 faceNet.setInput(cv2.dnn.blobFromImage(rgb_face, 1.0, (300, 300), MODEL_MEAN_VALUES, swapRB=True))
