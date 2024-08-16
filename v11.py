@@ -2,6 +2,7 @@ import cv2
 import face_recognition
 import pickle
 import time
+import main
 
 def save_known_faces(known_face_encodings, known_face_metadata):
     with open("known_faces.pkl", "wb") as f:
@@ -24,6 +25,20 @@ def detect_and_highlight_faces(frame):
 
     return frame, face_locations, face_encodings
 
+
+# Function to categorize age based on the given age range
+def categorize_age(age_range_str):
+    # Remove parentheses and split the string into lower and upper bounds
+    lower_bound, upper_bound = map(int, age_range_str.strip('()').split('-'))
+    
+    # Check the upper bound to determine the category
+    if upper_bound < 40:
+        return "Young Adult"
+    else:
+        return "Senior Adult"
+    
+
+
 def main():
     known_face_encodings, known_face_metadata = load_known_faces()
 
@@ -38,7 +53,10 @@ def main():
 
     MODEL_MEAN_VALUES = (78.4263377603, 87.7689143744, 114.895847746)
     ageList = ['(0-2)', '(4-6)', '(8-12)', '(15-20)', '(25-32)', '(38-43)', '(48-53)', '(60-100)']
+    # ageList = ['(0-40)','(41-100)']
     genderList = ['Male', 'Female']
+
+    print(type(ageList[0]))
 
     faceNet = cv2.dnn.readNet(faceModel, faceProto)
     ageNet = cv2.dnn.readNet(ageModel, ageProto)
@@ -69,8 +87,18 @@ def main():
                 match_index = matches.index(True)
                 identifier = f"Person {match_index + 1}"
                 metadata = known_face_metadata[match_index]
-                print(f"Known face detected: {identifier}, Gender: {metadata['gender']}, Age: {metadata['age']}")
-                cv2.putText(result_img, f"{identifier}, {metadata['gender']}, {metadata['age']}", (left, top - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 255), 2, cv2.LINE_AA)
+
+                print(type(metadata['age']))
+                print(type(metadata['gender']))
+
+                age_category = categorize_age(metadata['age'])
+                print(age_category)  # Output will be "Young Adult" for this example
+
+                
+                print(f"Known face detected: {identifier}, Gender: {metadata['gender']}, Category: {age_category}")
+                
+
+                cv2.putText(result_img, f"{identifier}, {metadata['gender']}, {age_category}", (left, top - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 255), 2, cv2.LINE_AA)
             else:
                 faceNet.setInput(cv2.dnn.blobFromImage(rgb_face, 1.0, (300, 300), MODEL_MEAN_VALUES, swapRB=True))
                 detections = faceNet.forward()

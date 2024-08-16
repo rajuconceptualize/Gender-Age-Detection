@@ -11,6 +11,12 @@ class API:
     PLAYER_STOP = BASE_URL + 'playback/stop'
     PLAYER_TRIGGER_CAMPAIGN = BASE_URL + 'trigger/1'
 
+    PLAYER_GENERAL = BASE_URL + 'trigger/general'
+
+    PLAYER_FEMALE_YOUNG_ADULT = BASE_URL + 'trigger/FemaleYoungAdult'
+
+    PLAYER_MALE_YOUNG_ADULT = BASE_URL + 'trigger/MaleYoungAdult'
+    PLAYER_MALE_SENIOR_ADULT = BASE_URL + 'trigger/MaleSeniorAdult'
 
 
 
@@ -51,10 +57,10 @@ def player(url):
 
 
 #  usage:
-response_1 = player(API.PLAYER_STATUS)
-response_2 = player(API.PLAYER_STOP_CURRENT)
+# response_1 = player(API.PLAYER_STATUS)
+# response_2 = player(API.PLAYER_STOP_CURRENT)
 # response_3 = player(API.PLAYER_STOP)
 
-print('Response 1:', response_1)
-print('Response 2:', response_2)
+# print('Response 1:', response_1)
+# print('Response 2:', response_2)
 # print('Response 3:', response_3)
