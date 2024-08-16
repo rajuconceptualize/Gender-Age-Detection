@@ -111,13 +111,14 @@ def categorize_gender_age(gender, age_category):
         return None  # Return None for invalid input or unrecognized category
 
 def player_trigger(number):
-    if number == '1':
+    if number == 1:
         response = player(API.PLAYER_FEMALE_YOUNG_ADULT)
-    elif number == '2':
+    elif number == 2:
         response = player(API.PLAYER_GENERAL)
-    elif number == '3':
+    elif number == 3:
+        print("IT IS HERE")
         response = player(API.PLAYER_MALE_YOUNG_ADULT)
-    elif number == '4':
+    elif number == 4:
         response = player(API.PLAYER_MALE_SENIOR_ADULT)
     else:
         response = player(API.PLAYER_GENERAL)
@@ -172,11 +173,11 @@ def main():
                 identifier = f"Person {match_index + 1}"
                 metadata = known_face_metadata[match_index]
 
-                print(type(metadata['age']))
-                print(type(metadata['gender']))
+                # print(type(metadata['age']))
+                # print(type(metadata['gender']))
 
                 age_category = categorize_age(metadata['age'])
-                print(age_category)  # Output will be "Young Adult" for this example
+                # print(age_category)  # Output will be "Young Adult" for this example
 
 
                 print(f"Known face detected: {identifier}, Gender: {metadata['gender']}, Category: {age_category}")
