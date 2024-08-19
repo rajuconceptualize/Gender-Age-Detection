@@ -144,20 +144,19 @@ def open_camera():
         if not cap.isOpened():
             raise Exception("Could not open the camera. Please check if it's connected or if the access is allowed.")
         
-        # Your existing gender and age detection code
+        
         while True:
             ret, frame = cap.read()
             if not ret:
                 print("Failed to capture image")
                 break
 
-            # Process the frame (e.g., gender and age detection)
-            # ...
+            # Process the frame 
             
             nown_face_encodings, known_face_metadata = load_known_faces()
 
 
-            aceProto = "opencv_face_detector.pbtxt"
+            faceProto = "opencv_face_detector.pbtxt"
             faceModel = "opencv_face_detector_uint8.pb"
             ageProto = "age_deploy.prototxt"
             ageModel = "age_net.caffemodel"
@@ -168,6 +167,30 @@ def open_camera():
             ageList = ['(0-2)', '(4-6)', '(8-12)', '(15-20)', '(25-32)', '(38-43)', '(48-53)', '(60-100)']
             # ageList = ['(0-40)','(41-100)']
             genderList = ['Male', 'Female']
+
+            faceNet = cv2.dnn.readNet(faceModel, faceProto)
+            ageNet = cv2.dnn.readNet(ageModel, ageProto)
+            genderNet = cv2.dnn.readNet(genderModel, genderProto)
+            
+
+            # start the player 
+
+            status = player(API.PLAYER_STATUS)
+
+            print('Starting Player Status:', status)
+
+            """
+            
+            if status['playing'] != True:
+                # player(API.PLAYER_START)
+                print("Started the Player")
+                mode = "general"
+            else:
+                # player(API.PLAYER_GENERAL)
+                print("Player already running....now swapped to General")
+                mode = "general"
+
+            """
 
 
 
