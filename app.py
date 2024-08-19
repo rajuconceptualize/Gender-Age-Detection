@@ -140,20 +140,14 @@ def player_trigger(number):
 
 def open_camera():
     try:
-        cap = cv2.VideoCapture(0)
-        if not cap.isOpened():
+        video_capture = cv2.VideoCapture(0)
+        if not video_capture.isOpened():
             raise Exception("Could not open the camera. Please check if it's connected or if the access is allowed.")
         
         
         while True:
-            ret, frame = cap.read()
-            if not ret:
-                print("Failed to capture image")
-                break
-
-            # Process the frame 
             
-            nown_face_encodings, known_face_metadata = load_known_faces()
+            known_face_encodings, known_face_metadata = load_known_faces()
 
 
             faceProto = "opencv_face_detector.pbtxt"
@@ -193,9 +187,94 @@ def open_camera():
             """
 
 
+            ret, frame = video_capture.read()
+            if not ret:
+                print("Failed to capture image")
+                break
 
-            # Display the resulting frame
-            cv2.imshow('Camera', frame)
+            result_img, face_boxes, face_encodings = detect_and_highlight_faces(frame)
+
+            if not face_boxes:
+                print("No face detected")
+                # player(API.PLAYER_GENERAL)
+                continue
+
+            for (top, right, bottom, left), face_encoding in zip(face_boxes, face_encodings):
+                face = frame[top:bottom, left:right]
+                if face.size == 0:
+                    print("Empty face array, skipping")
+                    continue
+                rgb_face = cv2.cvtColor(face, cv2.COLOR_BGR2RGB)
+                print(f"Face shape: {rgb_face.shape}")
+
+                matches = face_recognition.compare_faces(known_face_encodings, face_encoding)
+                if True in matches:
+                    match_index = matches.index(True)
+                    identifier = f"Person {match_index + 1}"
+                    metadata = known_face_metadata[match_index]
+
+                    # print(type(metadata['age']))
+                    # print(type(metadata['gender']))
+
+                    age_category = categorize_age(metadata['age'])
+                    # print(age_category)  # Output will be "Young Adult" for this example
+
+
+                    print(f"Known face detected: {identifier}, Gender: {metadata['gender']}, Category: {age_category}")
+                    
+
+                    cv2.putText(result_img, f"{identifier}, {metadata['gender']}, {age_category}", (left, top - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 255), 2, cv2.LINE_AA)
+
+                    category = categorize_gender_age(metadata['gender'], age_category)
+                    # print(f"Category: {category}")
+
+                    response_1 = player(API.PLAYER_STATUS)
+
+                    # print('Player Status:', response_1)
+
+                    
+                    # print(response_1['playing'])
+
+                    if response_1['playing'] != True:
+                        # player(API.PLAYER_START)
+                        # player_trigger(category)
+                        mode = "category"
+                        response_2 = "Triggered Player with " + str(category)
+                    else:
+                        if mode == "general":
+                            mode = "category"
+                            # player_trigger(category)
+                            response_2 = "Triggered Player fron General with " + str(category)
+                        else:
+                            response_2 = "Player is Running "+mode +"so not triggering"
+
+                    print('Response:', response_2)
+                else:
+                    faceNet.setInput(cv2.dnn.blobFromImage(rgb_face, 1.0, (300, 300), MODEL_MEAN_VALUES, swapRB=True))
+                    detections = faceNet.forward()
+                    if len(detections) > 0:
+                        detection = detections[0, 0, 0, :]
+                        if detection[2] > 0.7:  # Confidence threshold for face detection
+                            genderNet.setInput(cv2.dnn.blobFromImage(rgb_face, 1.0, (227, 227), MODEL_MEAN_VALUES, swapRB=True))
+                            gender_preds = genderNet.forward()
+                            gender = genderList[gender_preds[0].argmax()]
+
+                            ageNet.setInput(cv2.dnn.blobFromImage(rgb_face, 1.0, (227, 227), MODEL_MEAN_VALUES, swapRB=True))
+                            age_preds = ageNet.forward()
+                            age = ageList[age_preds[0].argmax()]
+
+                            metadata = {"gender": gender, "age": age}
+                            known_face_encodings.append(face_encoding)
+                            known_face_metadata.append(metadata)
+                            save_known_faces(known_face_encodings, known_face_metadata)
+
+                            identifier = f"Person {len(known_face_metadata)}"
+                            print(f"New face detected: {identifier}, Gender: {gender}, Age: {age}")
+                            cv2.putText(result_img, f"{identifier}, {gender}, {age}", (left, top - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 255), 2, cv2.LINE_AA)
+            
+            cv2.imshow("Video", result_img)
+
+
 
             # Exit loop on 'q' key press
             if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -205,7 +284,7 @@ def open_camera():
         print(f"An error occurred: {e}")
 
     finally:
-        cap.release()
+        video_capture.release()
         cv2.destroyAllWindows()
 
 if __name__ == "__main__":
