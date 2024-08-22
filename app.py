@@ -182,13 +182,13 @@ def open_camera():
 
             try:
                 if status is None:
-                    raise ValueError("PALYER ERROR")
+                    raise ValueError(f"{Fore.GREEN}ERROR : Player is not detected. Start the player manually. {Style.RESET_ALL}")
             except ValueError as e:
-                print(f"Error: {e}")
+                print(f"{e}")
                 # stop script
                 raise SystemExit(1)
             
-            print('Starting Player Status:', status)
+            print(f"{Fore.GREEN}Player Status:, {status}")
 
             
             
