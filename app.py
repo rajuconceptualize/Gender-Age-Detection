@@ -177,10 +177,17 @@ def open_camera():
             genderNet = cv2.dnn.readNet(genderModel, genderProto)
             
 
-            # start the player 
-
+            # start the player   
             status = player(API.PLAYER_STATUS)
 
+            try:
+                if status is None:
+                    raise ValueError("PALYER ERROR")
+            except ValueError as e:
+                print(f"Error: {e}")
+                # stop script
+                raise SystemExit(1)
+            
             print('Starting Player Status:', status)
 
             
