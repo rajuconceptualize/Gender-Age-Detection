@@ -4,7 +4,12 @@ import pickle
 import time
 import requests
 import json 
+from colorama import init, Fore, Style
 
+
+
+# Initialize colorama
+init(autoreset=True)
 
 
 class API:
@@ -56,7 +61,8 @@ def player(url):
             return None
 
     except Exception as e:
-        print(f'An error occurred: {e}')
+        # print(f'PLAYER ERROR :::: \n\n{e}')
+        print(Fore.RED + f"\n\n--PLAYER ERROR--\n\n{e}\n\n")
         return None
 
 
@@ -139,6 +145,10 @@ def player_trigger(number):
 
 
 def open_camera():
+
+    print(Fore.MAGENTA + "Application started successfully.")
+
+
     try:
         video_capture = cv2.VideoCapture(0)
         if not video_capture.isOpened():
@@ -173,18 +183,18 @@ def open_camera():
 
             print('Starting Player Status:', status)
 
-            """
+            
             
             if status['playing'] != True:
-                # player(API.PLAYER_START)
+                player(API.PLAYER_START)
                 print("Started the Player")
                 mode = "general"
             else:
-                # player(API.PLAYER_GENERAL)
+                player(API.PLAYER_GENERAL)
                 print("Player already running....now swapped to General")
                 mode = "general"
 
-            """
+            
 
 
             ret, frame = video_capture.read()
@@ -196,7 +206,7 @@ def open_camera():
 
             if not face_boxes:
                 print("No face detected")
-                # player(API.PLAYER_GENERAL)
+                player(API.PLAYER_GENERAL)
                 continue
 
             for (top, right, bottom, left), face_encoding in zip(face_boxes, face_encodings):
@@ -236,14 +246,14 @@ def open_camera():
                     # print(response_1['playing'])
 
                     if response_1['playing'] != True:
-                        # player(API.PLAYER_START)
-                        # player_trigger(category)
+                        player(API.PLAYER_START)
+                        player_trigger(category)
                         mode = "category"
                         response_2 = "Triggered Player with " + str(category)
                     else:
                         if mode == "general":
                             mode = "category"
-                            # player_trigger(category)
+                            player_trigger(category)
                             response_2 = "Triggered Player fron General with " + str(category)
                         else:
                             response_2 = "Player is Running "+mode +"so not triggering"
