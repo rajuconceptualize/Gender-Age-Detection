@@ -58,7 +58,7 @@ nbformat==5.10.4
 nest-asyncio==1.6.0
 notebook==7.2.1
 notebook_shim==0.2.4
-numpy @ file:///private/var/folders/c_/qfmhj66j0tn016nkx_th4hxm0000gp/T/abs_b7iptlxgej/croot/numpy_and_numpy_base_1708638622773/work/dist/numpy-1.26.4-cp311-cp311-macosx_10_9_x86_64.whl#sha256=ca93246020dd5cf5864c57fea8d3b0afd6530b245222908737c7f434a105fdc2
+numpy==1.26.4
 opencv-python==4.10.0
 opencv-python-headless==4.10.0
 overrides==7.7.0
