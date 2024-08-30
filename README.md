@@ -6,7 +6,10 @@ gh repo clone rajuconceptualize/Gender-Age-Detection
 python -m venv <venv_name>
 
 # activate the Virtual Environment
+## MAC / Linux
 source <venv_name>/bin/activate
+## windows
+<venv_name>\Scripts\activate
 
 # Run the Script
 python app.py
