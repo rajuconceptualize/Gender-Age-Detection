@@ -3,7 +3,6 @@ from deepface import DeepFace
 import os
 
 
-
 backends = [
   'opencv', 
   'ssd', 
@@ -61,7 +60,7 @@ while True:
             predictions = DeepFace.analyze(face_roi, \
                                            detector_backend = backends[5],\
                                            align = alignment_modes[1],
-                                           actions=['age', 'gender', 'emotion'], enforce_detection=False)
+                                           actions=['age', 'gender', 'race', 'emotion'], enforce_detection=False)
             
             # If predictions are returned as a list, extract the first item
             if isinstance(predictions, list):
@@ -71,9 +70,11 @@ while True:
             gender = predictions['gender']
             age = predictions['age']
             dominant_emotion = predictions['dominant_emotion']
+            race = predictions['race']
 
             # Put the text on the frame near the face
             # cv2.putText(frame, f"ID: {face_id}", (x, y - 40), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 0), 2)
+            cv2.putText(frame, f"Race: {race}", (x, y - 40), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 0), 2)
             cv2.putText(frame, f"Gender: {gender}", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
             cv2.putText(frame, f"Age: {int(age)}", (x, y + h + 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
             cv2.putText(frame, f"Mood: {dominant_emotion}", (x, y + h + 60), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
