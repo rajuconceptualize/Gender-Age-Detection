@@ -10,7 +10,7 @@ python -m venv <venv_name>
 ## MAC / Linux
 source <venv_name>/bin/activate
 
-## windows
+## Windows
 <venv_name>\Scripts\activate
 
 ## Run the Script
@@ -76,4 +76,15 @@ Hit CTRL + C
 
 **Notes:**  YOLOv8 is the latest version of the YOLO family, optimized for real-time applications but with strong accuracy.
 
+
+## Accuracy issues
+
+Accuracy issues, especially with gender detection using webcam feeds, can happen for a variety of reasons, especially when using generic pre-trained models. Some potential causes and steps we can take to improve accuracy:
+
+### Causes for Low Accuracy with Female Detection:
+
+**Lighting and Image Quality:** Poor lighting, low-quality webcam images, or small faces in the frame can impact detection.
+
+
+**Image Angles:** The angle at which you're presenting the photos can affect the model’s performance, as it's trained on a dataset where faces are typically frontal.
 
