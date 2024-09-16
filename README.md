@@ -88,3 +88,15 @@ Accuracy issues, especially with gender detection using webcam feeds, can happen
 
 **Image Angles:** The angle at which you're presenting the photos can affect the model’s performance, as it's trained on a dataset where faces are typically frontal.
 
+
+
+## Steps to Improve Accuracy:
+
+### Better Lighting and Frame Quality:
+
+Ensure good lighting conditions when showing photos to the webcam.
+Adjust the position of the camera or the photos for better clarity.
+
+### Face Size:
+
+Make sure that the faces in the images are large enough and clear in the frame. Smaller or pixelated faces are harder for the model to analyze.
